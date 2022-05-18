@@ -13,6 +13,9 @@ public class StartMenu implements IMenu {
     /* Why? Dependency or dependent means relying on something for support. */
     /* In this case we are relying on our userService class to retrieve data's from the database, and validate username, password etc. */
     /* This is why we are using dependency injection. */
+    String username;
+    String password;
+    Scanner scan = new Scanner(System.in);
     private final UserService userService;
 
     public StartMenu(UserService userService) {
@@ -65,84 +68,162 @@ public class StartMenu implements IMenu {
         System.out.println("[x] Exit");
     }
 
-    private void login() {
-        System.out.println("\nNeeds implementation...");
+    private void login(){
+        System.out.println("\nWelcome Back!");
+
+        checkUsername();
+        checkPassword();
+        confirmUserandPass();
+
     }
 
     private void signup() {
-        String username;
-        String password;
-        Scanner scan = new Scanner(System.in);
+        System.out.println("\nCreating account...");
 
-        completeExit:
-        {
-            while (true) {
-                System.out.println("\nCreating account...");
+        checkUsername();
+        checkPassword();
+        confirmUserandPass();
 
-                while (true) {
-                    /* Asking user to enter in username. */
-                    System.out.print("\nUsername: ");
-                    username = scan.nextLine();
+    }
+    private void checkUsername(){
+        while (true) {
+            /* Asking user to enter in username. */
+            System.out.print("\nUsername: ");
+            username = scan.nextLine();
 
-                    /* If the username is valid break out of the loop. Else re-enter username. */
-                    if (userService.isValidUsername(username)) {
-                        break;
-                    } else System.out.println("Invalid username. Username needs to be 8-20 characters long.");
-                }
-
-
-                while (true) {
-                    /* Asking user to enter in password. */
-                    System.out.print("\nPassword: ");
-                    password = scan.nextLine();
-
-                    /* If the password is valid confirm the password again. Else re-enter password. */
-                    if (userService.isValidPassword(password)) {
-                        /* Asking user to enter in password again. */
-                        System.out.print("\nRe enter password again: ");
-                        String confirm = scan.nextLine();
-
-                        /* If the two password equals each other, break. Else re-enter password. */
-                        if (password.equals(confirm)) break;
-                        else System.out.println("Password does not match :(");
-                    } else
-                        System.out.println("Invalid password. Minimum eight characters, at least one letter, one number and one special character.");
-                }
-
-                confirmExit:
-                {
-                    while (true) {
-                        /* Asking user to confirm username and password. */
-                        System.out.println("\nPlease confirm your credentials (y/n)");
-                        System.out.println("\nUsername: " + username);
-                        System.out.println("Password: " + password);
-
-                        System.out.print("\nEnter: ");
-                        String input = scan.nextLine();
-
-                        /* Switch statement for user input. Basically yes or no. */
-                        switch (input) {
-                            case "y":
-                                /* If yes, we instantiate a User object to store all the information into it. */
-                                User user = new User(UUID.randomUUID().toString(), username, password, "DEFAULT");
-
-                                /* Calling the anonymous class MainMenu.start() to navigate to the main menu screen. */
-                                /* We are also passing in a user object, so we know who is logged in. */
-                                new MainMenu(user).start();
-
-                                /* Break out of the entire loop. */
-                                break completeExit;
-                            case "n":
-
-                                /* Re-enter in credentials again. */
-                                break confirmExit;
-                            default:
-                                System.out.println("Invalid Input.");
-                                break;
-                        }
-                    }
-                }
-            }
+            /* If the username is valid break out of the loop. Else re-enter username. */
+            if (userService.isValidUsername(username)) {
+                break;
+            } else System.out.println("Invalid username. Username needs to be 8-20 characters long.");
         }
     }
+
+    private void checkPassword(){
+        while (true) {
+            /* Asking user to enter in password. */
+            System.out.print("\nPassword: ");
+            password = scan.nextLine();
+
+            /* If the password is valid confirm the password again. Else re-enter password. */
+            if (userService.isValidPassword(password)) {
+                /* Asking user to enter in password again. */
+                System.out.print("\nRe enter password again: ");
+                String confirm = scan.nextLine();
+
+                /* If the two password equals each other, break. Else re-enter password. */
+                if (password.equals(confirm)) break;
+                else System.out.println("Password does not match :(");
+            } else
+                System.out.println("Invalid password. Minimum eight characters, at least one letter, one number and one special character.");
+        }
+    }
+
+    /*/FIX ME/*/
+    private Boolean confirmUserandPass(){
+        boolean match = true;
+        confirmExit:
+        {
+            /* Asking user to confirm username and password. */
+            System.out.println("\nPlease confirm your credentials (y/n)");
+            System.out.println("\nUsername: " + username);
+            System.out.println("Password: " + password);
+
+            System.out.print("\nEnter: ");
+            String input = scan.nextLine();
+
+            /* Switch statement for user input. Basically yes or no. */
+            switch (input) {
+                case "y":
+                    /* If yes, we instantiate a User object to store all the information into it. */
+                    User user = new User(UUID.randomUUID().toString(), username, password, "DEFAULT");
+
+                    /* Calling the anonymous class MainMenu.start() to navigate to the main menu screen. */
+                    /* We are also passing in a user object, so we know who is logged in. */
+                    new MainMenu(user).start();
+
+                    /* Break out of the entire loop. */
+                    break confirmExit;
+                case "n":
+
+                    /* Re-enter in credentials again. */
+                    match = false;
+                    return match;
+                default:
+                    System.out.println("Invalid Input.");
+            }
+        }
+        return match;
+    }
+
+
+//    private  void check(){
+//        completeExit:
+//        {
+//            while (true) {
+//                while (true) {
+//                    /* Asking user to enter in username. */
+//                    System.out.print("\nUsername: ");
+//                    username = scan.nextLine();
+//
+//                    /* If the username is valid break out of the loop. Else re-enter username. */
+//                    if (userService.isValidUsername(username)) {
+//                        break;
+//                    } else System.out.println("Invalid username. Username needs to be 8-20 characters long.");
+//                }
+//
+//
+//                while (true) {
+//                    /* Asking user to enter in password. */
+//                    System.out.print("\nPassword: ");
+//                    password = scan.nextLine();
+//
+//                    /* If the password is valid confirm the password again. Else re-enter password. */
+//                    if (userService.isValidPassword(password)) {
+//                        /* Asking user to enter in password again. */
+//                        System.out.print("\nRe enter password again: ");
+//                        String confirm = scan.nextLine();
+//
+//                        /* If the two password equals each other, break. Else re-enter password. */
+//                        if (password.equals(confirm)) break;
+//                        else System.out.println("Password does not match :(");
+//                    } else
+//                        System.out.println("Invalid password. Minimum eight characters, at least one letter, one number and one special character.");
+//                }
+//
+//                confirmExit:
+//                {
+//                    while (true) {
+//                        /* Asking user to confirm username and password. */
+//                        System.out.println("\nPlease confirm your credentials (y/n)");
+//                        System.out.println("\nUsername: " + username);
+//                        System.out.println("Password: " + password);
+//
+//                        System.out.print("\nEnter: ");
+//                        String input = scan.nextLine();
+//
+//                        /* Switch statement for user input. Basically yes or no. */
+//                        switch (input) {
+//                            case "y":
+//                                /* If yes, we instantiate a User object to store all the information into it. */
+//                                User user = new User(UUID.randomUUID().toString(), username, password, "DEFAULT");
+//
+//                                /* Calling the anonymous class MainMenu.start() to navigate to the main menu screen. */
+//                                /* We are also passing in a user object, so we know who is logged in. */
+//                                new MainMenu(user).start();
+//
+//                                /* Break out of the entire loop. */
+//                                break completeExit;
+//                            case "n":
+//
+//                                /* Re-enter in credentials again. */
+//                                break confirmExit;
+//                            default:
+//                                System.out.println("Invalid Input.");
+//                                break;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 }
