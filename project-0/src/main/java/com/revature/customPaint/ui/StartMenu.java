@@ -59,7 +59,7 @@ public class StartMenu implements IMenu {
 
     private void displayWelcomeMsg() {
         /* Welcome message. */
-        System.out.println("\nWelcome to Yolp!");
+        System.out.println("\nWelcome to Custom Paint!");
         System.out.println("[1] Login");
         System.out.println("[2] Signup");
         System.out.println("[x] Exit");
