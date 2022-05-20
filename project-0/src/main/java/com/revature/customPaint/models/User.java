@@ -49,6 +49,10 @@ public class User {
         this.role = role;
     }
 
+    public String toFileString() {
+        return id + ":" + username + ":" + password + ":" + role + "\n";
+    }
+
     @Override
     public String toString() {
         return "User{" +
