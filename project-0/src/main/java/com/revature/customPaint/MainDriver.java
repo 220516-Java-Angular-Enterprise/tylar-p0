@@ -3,6 +3,7 @@ package com.revature.customPaint;
 import com.revature.customPaint.daos.UserDAO;
 import com.revature.customPaint.services.UserService;
 import com.revature.customPaint.ui.StartMenu;
+import com.revature.customPaint.util.database.DatabaseConnection;
 
 /* This class purpose is to start our application. */
 public class MainDriver {

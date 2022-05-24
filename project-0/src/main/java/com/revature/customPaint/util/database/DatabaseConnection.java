@@ -7,7 +7,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-/* Notice that this class is a Singleton design pattern. */
+/* Notice that this class is a Singleton design pattern
+* because we only want one instance of the database class*/
 public class DatabaseConnection {
     /* instantiating Connection object */
     private static Connection con;
@@ -21,7 +22,7 @@ public class DatabaseConnection {
             Class.forName("org.postgresql.Driver");
 
             /* using prop object to load url, username, password */
-            prop.load(new FileReader("src/main/resources/db.properties"));
+            prop.load(new FileReader("src/main/resources/database/db.properties"));
 
             /* actually getting this connection */
             con = DriverManager.getConnection(prop.getProperty("url"), prop.getProperty("username"), prop.getProperty("password"));

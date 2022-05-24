@@ -14,7 +14,7 @@ import java.util.List;
 
 public class UserDAO implements CrudDAO<User> {
     Connection con = DatabaseConnection.getCon();
-    String path = "src/main/resources/database/user.txt";
+    //String path = "src/main/resources/database/user.txt";
 
     @Override
     public void save(User obj) {
