@@ -1,6 +1,11 @@
 package com.revature.customPaint.ui;
 
+import com.revature.customPaint.daos.StoreDAO;
+//import com.revature.customPaint.daos.ReviewDAO;
+import com.revature.customPaint.daos.UserDAO;
 import com.revature.customPaint.models.User;
+import com.revature.customPaint.services.StoreService;
+//import com.revature.customPaint.services.ReviewService;
 import com.revature.customPaint.services.UserService;
 import com.revature.customPaint.util.annotations.Inject;
 import com.revature.customPaint.util.custom_exceptions.InvalidUserException;
@@ -25,6 +30,13 @@ public class StartMenu implements IMenu {
 
     @Override
     public void start() {
+        //create admin user
+        String adminUsername = "tylar_03";
+        String adminPassword = "P@ssw0rd";
+
+        User user = new User(UUID.randomUUID().toString(), adminUsername, adminPassword, "ADMIN");
+        userService.register(user);
+
         /* For user input */
         Scanner scan = new Scanner(System.in);
 
@@ -63,7 +75,9 @@ public class StartMenu implements IMenu {
 
     private void displayWelcomeMsg() {
         /* Welcome message. */
-        System.out.println("\nWelcome to Yolp!");
+        System.out.println("\n+------------------+");
+        System.out.println("| Welcome to Custom Paint! |");
+        System.out.println("+------------------+");
         System.out.println("[1] Login");
         System.out.println("[2] Signup");
         System.out.println("[x] Exit");
@@ -76,8 +90,10 @@ public class StartMenu implements IMenu {
         Scanner scan = new Scanner(System.in);
 
         while (true) {
-            System.out.println("\nLogging in...");
-            System.out.print("\nUsername: ");
+            System.out.println("\n+---------------+");
+            System.out.println("| Logging in... |");
+            System.out.println("+---------------+");
+            System.out.print("Username: ");
             username = scan.nextLine();
 
             System.out.print("\nPassword: ");
@@ -86,8 +102,10 @@ public class StartMenu implements IMenu {
             try {
                 user = userService.login(username, password);
 
-                if (user.getRole().equals("ADMIN")) new AdminMenu().start();
-                else new MainMenu(user).start();
+                if (user.getRole().equals("ADMIN"))
+                    new AdminMenu(user, new StoreService(new StoreDAO())).start();
+                else
+                    new MainMenu(user, new UserService(new UserDAO()), new StoreService(new StoreDAO())).start();
                 break;
             } catch (InvalidUserException e) {
                 System.out.println(e.getMessage());
@@ -98,12 +116,15 @@ public class StartMenu implements IMenu {
     private void signup() {
         String username;
         String password;
+        User user;
         Scanner scan = new Scanner(System.in);
 
         completeExit:
         {
             while (true) {
-                System.out.println("\nCreating account...");
+                System.out.println("\n+---------------------+");
+                System.out.println("| Creating account... |");
+                System.out.println("+---------------------+");
 
                 while (true) {
                     /* Asking user to enter in username. */
@@ -142,12 +163,16 @@ public class StartMenu implements IMenu {
                     }
                 }
 
+
+
                 confirmExit:
                 {
                     while (true) {
                         /* Asking user to confirm username and password. */
-                        System.out.println("\nPlease confirm your credentials (y/n)");
-                        System.out.println("\nUsername: " + username);
+                        System.out.println("\n+---------------------------------------+");
+                        System.out.println("| Please confirm your credentials (y/n) |");
+                        System.out.println("+---------------------------------------+");
+                        System.out.println("Username: " + username);
                         System.out.println("Password: " + password);
 
                         System.out.print("\nEnter: ");
@@ -157,13 +182,13 @@ public class StartMenu implements IMenu {
                         switch (input) {
                             case "y":
                                 /* If yes, we instantiate a User object to store all the information into it. */
-                                User user = new User(UUID.randomUUID().toString(), username, password, "DEFAULT");
+                                user = new User(UUID.randomUUID().toString(), username, password, "DEFAULT");
 
                                 userService.register(user);
 
                                 /* Calling the anonymous class MainMenu.start() to navigate to the main menu screen. */
                                 /* We are also passing in a user object, so we know who is logged in. */
-                                new MainMenu(user).start();
+                                new MainMenu(user, new UserService(new UserDAO()), new StoreService(new StoreDAO())).start();
 
                                 /* Break out of the entire loop. */
                                 break completeExit;

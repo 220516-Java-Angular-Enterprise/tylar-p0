@@ -27,7 +27,7 @@ public class UserDAO implements CrudDAO<User> {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("An error occurred when tyring to save to the database.");
+            throw new RuntimeException("An error occurred when trying to save to the database.");
         }
     }
 
