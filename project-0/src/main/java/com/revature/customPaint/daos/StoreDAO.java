@@ -16,7 +16,7 @@ public class StoreDAO implements CrudDAO<Store> {
     @Override
     public void save(Store obj) {
         try {
-            PreparedStatement ps = con.prepareStatement("INSERT INTO restaurants (id, name, city, state) VALUES (?, ?, ?, ?)");
+            PreparedStatement ps = con.prepareStatement("INSERT INTO stores (id, name, city, state) VALUES (?, ?, ?, ?)");
             ps.setString(1, obj.getId());
             ps.setString(2, obj.getName());
             ps.setString(3, obj.getCity());

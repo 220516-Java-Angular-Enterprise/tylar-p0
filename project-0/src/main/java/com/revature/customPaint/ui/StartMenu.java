@@ -1,11 +1,13 @@
 package com.revature.customPaint.ui;
 
+import com.revature.customPaint.daos.InventoryDAO;
+import com.revature.customPaint.daos.ProductDAO;
 import com.revature.customPaint.daos.StoreDAO;
-//import com.revature.customPaint.daos.ReviewDAO;
 import com.revature.customPaint.daos.UserDAO;
 import com.revature.customPaint.models.User;
+import com.revature.customPaint.services.InventoryService;
+import com.revature.customPaint.services.ProductService;
 import com.revature.customPaint.services.StoreService;
-//import com.revature.customPaint.services.ReviewService;
 import com.revature.customPaint.services.UserService;
 import com.revature.customPaint.util.annotations.Inject;
 import com.revature.customPaint.util.custom_exceptions.InvalidUserException;
@@ -30,13 +32,6 @@ public class StartMenu implements IMenu {
 
     @Override
     public void start() {
-        //create admin user
-        String adminUsername = "tylar_03";
-        String adminPassword = "P@ssw0rd";
-
-        User user = new User(UUID.randomUUID().toString(), adminUsername, adminPassword, "ADMIN");
-        userService.register(user);
-
         /* For user input */
         Scanner scan = new Scanner(System.in);
 
@@ -103,7 +98,7 @@ public class StartMenu implements IMenu {
                 user = userService.login(username, password);
 
                 if (user.getRole().equals("ADMIN"))
-                    new AdminMenu(user, new StoreService(new StoreDAO())).start();
+                    new AdminMenu(user, new StoreService(new StoreDAO()), new ProductService(new ProductDAO()), new InventoryService(new InventoryDAO())).start();
                 else
                     new MainMenu(user, new UserService(new UserDAO()), new StoreService(new StoreDAO())).start();
                 break;

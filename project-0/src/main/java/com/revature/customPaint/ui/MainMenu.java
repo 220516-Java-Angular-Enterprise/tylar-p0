@@ -9,6 +9,7 @@ import com.revature.customPaint.services.UserService;
 import com.revature.customPaint.util.annotations.Inject;
 
 import javax.swing.plaf.synth.SynthRootPaneUI;
+import java.sql.SQLOutput;
 import java.util.List;
 import java.util.Scanner;
 
@@ -34,17 +35,22 @@ public class MainMenu implements IMenu {
         exit:
         {
             while (true) {
-                System.out.println("\n"+drawHorizontalLine("| Welcome to main menu  |", user.getUsername()));
-                System.out.println("| Welcome to main menu " + user.getUsername() + " |");
-                System.out.println(drawHorizontalLine("| Welcome to main menu  |", user.getUsername()));
-                System.out.println("[1] View all stores");
-                System.out.println("[x] Sign out");
+                System.out.println("\n"+drawHorizontalLine("| Welcome! |", user.getUsername()));
+                System.out.println("| Welcome " + user.getUsername() + "!|");
+                System.out.println(drawHorizontalLine("| Welcome! |", user.getUsername()));
+                System.out.println(drawSquare("| [1] Clothes     |     [2]Cart     |     [3]Profile     |     [x] Sign out |"));
+                System.out.println("| [1] Clothes     |     [2]Cart    |      [3]Profile     |     [x] Sign out |");
+                System.out.println(drawSquare("| [1] Clothes     |     [2]Cart     |     [3]Profile     |     [x] Sign out |"));
 
                 System.out.print("\nEnter: ");
 
                 switch (scan.nextLine()) {
                     case "1":
-                        viewStores();
+                        viewClothes();
+                        break;
+                    case "2":
+                        break;
+                    case "3":
                         break;
                     case "x":
                         break exit;
@@ -56,7 +62,7 @@ public class MainMenu implements IMenu {
         }
     }
 
-    private void viewStores() {
+    private void viewClothes() {
         Scanner scan = new Scanner(System.in);
         List<Store> stores = storeService.getAllStores();
 
@@ -143,6 +149,17 @@ public class MainMenu implements IMenu {
         for (int i = 0; i < len; i++) {
             if (i == 0 || i == len - 1) sb.append("+");
             else sb.append("-");
+        }
+
+        return sb.toString();
+    }
+
+    private String drawSquare(String msg) {
+        int len = msg.length();
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < len; i++) {
+            sb.append("-");
         }
 
         return sb.toString();
