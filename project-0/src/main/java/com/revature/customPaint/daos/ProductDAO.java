@@ -1,11 +1,14 @@
 package com.revature.customPaint.daos;
 
 import com.revature.customPaint.models.Product;
+import com.revature.customPaint.models.Store;
 import com.revature.customPaint.util.database.DatabaseConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDAO implements CrudDAO<Product> {
@@ -15,13 +18,12 @@ public class ProductDAO implements CrudDAO<Product> {
     public void save(Product obj) {
         try{
             //prepares SQL statement template
-            PreparedStatement ps = con.prepareStatement("INSERT INTO products (id, name, category, description, quantity, cost) VALUES (?, ?, ?, ?, ?, ?) ");
+            PreparedStatement ps = con.prepareStatement("INSERT INTO products (id, name, category, description, cost) VALUES (?, ?, ?, ?, ?) ");
             ps.setString(1, obj.getId());
             ps.setString(2, obj.getName());
             ps.setString(3, obj.getCategory());
             ps.setString(4, obj.getDescription());
-            ps.setInt(5, obj.getQuantity());
-            ps.setDouble(6, obj.getCost());
+            ps.setDouble(5, obj.getCost());
             ps.executeUpdate();
         }catch(SQLException e){
             throw new RuntimeException("An error occurred when tyring to save to the database.");
@@ -45,6 +47,20 @@ public class ProductDAO implements CrudDAO<Product> {
 
     @Override
     public List<Product> getAll() {
-        return null;
+        List<Product> products = new ArrayList<>();
+
+        try {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM products");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                products.add(new Product(rs.getString("id"), rs.getString("name"), rs.getString("category"), rs.getString("description"), rs.getDouble("cost")));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("An error occurred when tyring to get data from to the database.");
+        }
+
+        return products;
     }
 }

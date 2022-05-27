@@ -1,7 +1,6 @@
 package com.revature.customPaint.services;
 
 import com.revature.customPaint.daos.StoreDAO;
-import com.revature.customPaint.daos.StoreDAO;
 import com.revature.customPaint.models.Store;
 
 import java.util.List;

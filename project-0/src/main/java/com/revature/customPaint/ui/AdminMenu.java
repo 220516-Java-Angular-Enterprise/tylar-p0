@@ -1,10 +1,8 @@
 package com.revature.customPaint.ui;
 
-import com.revature.customPaint.models.Inventory;
 import com.revature.customPaint.models.Product;
 import com.revature.customPaint.models.Store;
 import com.revature.customPaint.models.User;
-import com.revature.customPaint.services.InventoryService;
 import com.revature.customPaint.services.StoreService;
 import com.revature.customPaint.services.ProductService;
 import com.revature.customPaint.util.annotations.Inject;
@@ -18,14 +16,12 @@ public class AdminMenu implements IMenu {
     private final User user;
     private final StoreService storeService;
     private final ProductService productService;
-    private final InventoryService inventoryService;
 
     @Inject
-    public AdminMenu(User user, StoreService storeService, ProductService productService, InventoryService inventoryService) {
+    public AdminMenu(User user, StoreService storeService, ProductService productService) {
         this.user = user;
         this.storeService = storeService;
         this.productService = productService;
-        this.inventoryService = inventoryService;
     }
 
     @Override
@@ -39,9 +35,10 @@ public class AdminMenu implements IMenu {
                 System.out.println("| Welcome to admin menu " + user.getUsername() + " |");
                 System.out.println(drawHorizontalLine("| Welcome to admin menu  |", user.getUsername()));
                 System.out.println("[1] Create store");
-                System.out.println("[2] Update store");
-                System.out.println("[3] Delete store");
-                System.out.println("[4] Search store");
+                System.out.println("[2] Create product");
+                System.out.println("[3] Add product to store");
+                System.out.println("[4] Delete store");
+                System.out.println("[5] Search store");
                 System.out.println("[x] Sign out");
 
                 System.out.print("\nEnter: ");
@@ -51,9 +48,12 @@ public class AdminMenu implements IMenu {
                         createStore();
                         break;
                     case "2":
-                        updateStore();
+                        createProduct();
                         break;
                     case "3":
+                        //***//add inventory functionality//***//
+                        //adds product to store
+                        createInventory();
                         break;
                     case "4":
                         break;
@@ -108,25 +108,19 @@ public class AdminMenu implements IMenu {
         }
     }
 
-    private void updateStore(){
+    private void createProduct(){
         Scanner scan = new Scanner(System.in);
         Product product = new Product();
-        Inventory inventory = new Inventory();
 
-        int quantity;
-        int q;
-        String productId;
 
         exit:
         {
             while (true) {
                 System.out.println("\n+------------------------+");
-                System.out.println("| Updating Store... |");
+                System.out.println("|    Creating Product ...  |");
                 System.out.println("+------------------------+");
 
-                productId = UUID.randomUUID().toString();
-                product.setId(productId);
-                inventory.setProductId(productId);
+                product.setId(UUID.randomUUID().toString());
 
                 System.out.print("Name: ");
                 product.setName(scan.nextLine());
@@ -137,28 +131,16 @@ public class AdminMenu implements IMenu {
                 System.out.print("\nDescription: ");
                 product.setDescription(scan.nextLine());
 
-                System.out.print("\nQuantity: ");
-                quantity = scan.nextInt();
-                product.setQuantity(quantity);
-                inventory.setQuantity(quantity);
-
                 System.out.print("\nCost: ");
-                product.setCost(scan.nextInt());
-
-                //**//FIX ME//**//
-                System.out.print("\nStore ID: ");
-                inventory.setStoreId(scan.nextLine());
-                //**//FIX ME//**//
+                product.setCost(scan.nextDouble());
+                scan.nextLine();
 
                 System.out.println("\nPlease confirm updates (y/n)");
                 System.out.println("\n" + product);
 
                 switch (scan.nextLine()) {
                     case "y":
-                        product = new Product(productId, product.getName(), product.getCategory(), product.getDescription(), product.getQuantity(), product.getCost());
-                        inventory = new Inventory(productId, inventory.getStoreId(), inventory.getQuantity());
                         productService.register(product);
-                        inventoryService.register(inventory);
                         break exit;
                     case "n":
                         break;
@@ -168,6 +150,10 @@ public class AdminMenu implements IMenu {
                 }
             }
         }
+    }
+
+    public void createInventory(){
+
     }
 
     private String drawHorizontalLine(String msg, String nameLength) {

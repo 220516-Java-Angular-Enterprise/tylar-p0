@@ -5,19 +5,17 @@ public class Product {
     private String name;
     private String category;
     private String description;
-    private int quantity;
     private double cost;
 
     public Product() {
         super();
     }
 
-    public Product(String id, String name, String category, String description, int quantity, double cost) {
+    public Product(String id, String name, String category, String description, double cost) {
         this.id = id;
         this.name = name;
         this.category = category;
         this.description = description;
-        this.quantity = quantity;
         this.cost = cost;
     }
 
@@ -53,14 +51,6 @@ public class Product {
         this.description = description;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
     public double getCost() {
         return cost;
     }
@@ -72,6 +62,6 @@ public class Product {
     @Override
     public String toString() {
         return "ID: " + id + "\nName: " + name + "\nCategory: " + category + "\nDescription: " +
-                description + "\nQuantity: " + quantity + "\nCost: " + cost;
+                description + "\nCost: " + cost;
     }
 }
