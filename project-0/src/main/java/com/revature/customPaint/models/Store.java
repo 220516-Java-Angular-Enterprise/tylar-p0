@@ -2,6 +2,7 @@ package com.revature.customPaint.models;
 
 public class Store {
     private String id;
+    private String street;
     private String name;
     private String city;
     private String state;
@@ -10,8 +11,9 @@ public class Store {
         super();
     }
 
-    public Store(String id, String name, String city, String state) {
+    public Store(String id, String street, String name, String city, String state) {
         this.id = id;
+        this.street = street;
         this.name = name;
         this.city = city;
         this.state = state;
@@ -23,6 +25,14 @@ public class Store {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
     }
 
     public String getName() {

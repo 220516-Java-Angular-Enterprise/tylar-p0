@@ -15,6 +15,7 @@ public class StoreService {
     public void register(Store store) {
         storeDAO.save(store);
     }
+    public void delete(String id){storeDAO.delete(id); }
 
     public List<Store> getAllStores() {
         return storeDAO.getAll();

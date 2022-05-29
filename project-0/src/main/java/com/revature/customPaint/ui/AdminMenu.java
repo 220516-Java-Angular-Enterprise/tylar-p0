@@ -1,27 +1,30 @@
 package com.revature.customPaint.ui;
 
+import com.revature.customPaint.models.Inventory;
 import com.revature.customPaint.models.Product;
 import com.revature.customPaint.models.Store;
 import com.revature.customPaint.models.User;
+import com.revature.customPaint.services.InventoryService;
 import com.revature.customPaint.services.StoreService;
 import com.revature.customPaint.services.ProductService;
 import com.revature.customPaint.util.annotations.Inject;
 
-import java.util.Scanner;
-import java.util.UUID;
-import java.util.Random;
+import java.sql.Array;
+import java.util.*;
 
 public class AdminMenu implements IMenu {
     @Inject
     private final User user;
     private final StoreService storeService;
     private final ProductService productService;
+    private final InventoryService inventoryService;
 
     @Inject
-    public AdminMenu(User user, StoreService storeService, ProductService productService) {
+    public AdminMenu(User user, StoreService storeService, ProductService productService, InventoryService inventoryService) {
         this.user = user;
         this.storeService = storeService;
         this.productService = productService;
+        this.inventoryService = inventoryService;
     }
 
     @Override
@@ -51,11 +54,10 @@ public class AdminMenu implements IMenu {
                         createProduct();
                         break;
                     case "3":
-                        //***//add inventory functionality//***//
-                        //adds product to store
                         createInventory();
                         break;
                     case "4":
+                        deleteStore();
                         break;
                     case "x":
                         break exit;
@@ -70,8 +72,8 @@ public class AdminMenu implements IMenu {
     private void createStore() {
         Scanner scan = new Scanner(System.in);
         Store store = new Store();
-        Random rand = new Random();
-        int upperBound = 5;
+
+        store.setId(UUID.randomUUID().toString());
 
         exit:
         {
@@ -79,8 +81,6 @@ public class AdminMenu implements IMenu {
                 System.out.println("\n+------------------------+");
                 System.out.println("| Building new Store... |");
                 System.out.println("+------------------------+");
-
-                store.setId(Integer.toString(rand.nextInt(upperBound)));
 
                 System.out.print("Name: ");
                 store.setName(scan.nextLine());
@@ -90,6 +90,9 @@ public class AdminMenu implements IMenu {
 
                 System.out.print("\nState: ");
                 store.setState(scan.nextLine());
+
+                System.out.println("Street: ");
+                store.setStreet(scan.nextLine());
 
                 System.out.println("\nPlease confirm new store (y/n)");
                 System.out.println("\n" + store);
@@ -153,6 +156,124 @@ public class AdminMenu implements IMenu {
     }
 
     public void createInventory(){
+        Scanner scan = new Scanner(System.in);
+        Inventory inventory = new Inventory();
+
+
+        exit:
+        {
+            while (true) {
+                System.out.println("\n+-----------------------------+");
+                System.out.println("|  Adding product to store ...  |");
+                System.out.println("+-------------------------------+");
+
+                //ask admin what product they with to add
+                //provide list of products
+                //ask admin how many products
+                //ask admin what store they wish to add to
+                //provide list of stores
+                //get store id and add to inventory
+                //get product id and add to inventory
+                //add quantity to inventory
+
+                while(true){
+                    System.out.println("What product would you like to add?");
+                    List<Product> allProducts = productService.getAllProducts();
+
+                    for(int i = 0; i < allProducts.size(); i++){
+                        System.out.println("[ " + (i + 1) + " ]" + allProducts.get(i).getName());
+                    }
+
+                    System.out.println("Enter: ");
+                    int input = scan.nextInt() - 1;
+
+                    if(input < 0 || input >= allProducts.size()){
+                        System.out.println("Invalid input. Try again.");
+                    }else{
+                        inventory.setProductId(allProducts.get(input).getId());
+                        break;
+                    }
+                }
+
+
+                System.out.println("How many products would you like to add? ");
+                inventory.setQuantity(scan.nextInt());
+
+                while(true){
+                    System.out.println("What store would you like to add to?");
+                    List<Store> allStores = storeService.getAllStores();
+
+                    for(int i = 0; i < allStores.size(); i++){
+                        System.out.println("[ " + (i + 1) + " ]" + allStores.get(i).getStreet() + " st., " + allStores.get(i).getCity());
+                    }
+                    System.out.println("Enter: ");
+                    int input = scan.nextInt() - 1;
+
+                    if(input < 0 || input >= allStores.size()){
+                        System.out.println("Invalid input. Try again.");
+                    }else{
+                        inventory.setStoreId(allStores.get(input).getId());
+                        scan.nextLine();
+                        break;
+                    }
+                }
+
+
+                System.out.println("\nPlease confirm updates (y/n)");
+                System.out.println("\n" + inventory);
+
+                switch (scan.nextLine()) {
+                    case "y":
+                        inventoryService.register(inventory);
+                        break exit;
+                    case "n":
+                        break;
+                    default:
+                        System.out.println("\nInvalid input.");
+                        break;
+                }
+            }
+        }
+    }
+
+    private void deleteStore(){
+        Scanner scan = new Scanner(System.in);
+        Store store = new Store();
+
+        exit:
+        {
+            while (true) {
+                System.out.println("Which store do you want to delete: ");
+                List<Store> allStores = storeService.getAllStores();
+
+                for (int i = 0; i < allStores.size(); i++) {
+                    System.out.println("[ " + (i + 1) + " ]" + allStores.get(i).getStreet() + " st., " + allStores.get(i).getCity());
+                }
+                System.out.println("Enter: ");
+                int input = scan.nextInt() - 1;
+                scan.nextLine();
+
+
+                if (input < 0 || input >= allStores.size()) {
+                    System.out.println("Invalid input. Try again.");
+                } else {
+                    System.out.println("\nPlease confirm updates (y/n)");
+                    System.out.println("\n" + allStores.get(input).getStreet() + " st., " + allStores.get(input).getCity());
+
+                    switch (scan.nextLine()) {
+                        case "y":
+                            storeService.delete(allStores.get(input).getId());
+                            break exit;
+                        case "n":
+                            break;
+                        default:
+                            System.out.println("\nInvalid input.");
+                            break;
+                    }
+                }
+            }
+        }
+
 
     }
 
