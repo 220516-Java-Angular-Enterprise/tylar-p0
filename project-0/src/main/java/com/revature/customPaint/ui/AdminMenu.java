@@ -1,5 +1,6 @@
 package com.revature.customPaint.ui;
 
+import com.revature.customPaint.daos.InventoryDAO;
 import com.revature.customPaint.models.Inventory;
 import com.revature.customPaint.models.Product;
 import com.revature.customPaint.models.Store;
@@ -8,6 +9,7 @@ import com.revature.customPaint.services.InventoryService;
 import com.revature.customPaint.services.StoreService;
 import com.revature.customPaint.services.ProductService;
 import com.revature.customPaint.util.annotations.Inject;
+import com.revature.customPaint.util.custom_exceptions.InvalidStoreException;
 
 import java.sql.Array;
 import java.util.*;
@@ -85,14 +87,24 @@ public class AdminMenu implements IMenu {
                 System.out.print("Name: ");
                 store.setName(scan.nextLine());
 
-                System.out.print("\nCity: ");
-                store.setCity(scan.nextLine());
-
-                System.out.print("\nState: ");
-                store.setState(scan.nextLine());
-
-                System.out.println("Street: ");
+                System.out.print("Street: ");
                 store.setStreet(scan.nextLine());
+
+                while(true){
+                    System.out.print("\nCity: ");
+                    String city = scan.nextLine().toLowerCase();
+
+                    try{
+                        if(storeService.isNotDuplicateCity(city)){
+                            store.setCity(city);
+                            break;
+                        }
+                    }catch (InvalidStoreException e){
+                        System.out.println(e.getMessage());
+                    }
+
+                }
+
 
                 System.out.println("\nPlease confirm new store (y/n)");
                 System.out.println("\n" + store);
@@ -176,43 +188,50 @@ public class AdminMenu implements IMenu {
                 //get product id and add to inventory
                 //add quantity to inventory
 
+                List<Product> allProducts;
+                int prodInput;
+
                 while(true){
                     System.out.println("What product would you like to add?");
-                    List<Product> allProducts = productService.getAllProducts();
+                    allProducts = productService.getAllProducts();
 
                     for(int i = 0; i < allProducts.size(); i++){
                         System.out.println("[ " + (i + 1) + " ]" + allProducts.get(i).getName());
                     }
 
                     System.out.println("Enter: ");
-                    int input = scan.nextInt() - 1;
+                    prodInput = scan.nextInt() - 1;
 
-                    if(input < 0 || input >= allProducts.size()){
+                    if(prodInput < 0 || prodInput >= allProducts.size()){
                         System.out.println("Invalid input. Try again.");
                     }else{
-                        inventory.setProductId(allProducts.get(input).getId());
+                        inventory.setProductId(allProducts.get(prodInput).getId());
                         break;
                     }
                 }
 
 
                 System.out.println("How many products would you like to add? ");
-                inventory.setQuantity(scan.nextInt());
+                int quantity = scan.nextInt();
+                inventory.setQuantity(quantity);
+
+                List<Store> allStores;
+                int storeInput;
 
                 while(true){
                     System.out.println("What store would you like to add to?");
-                    List<Store> allStores = storeService.getAllStores();
+                    allStores = storeService.getAllStores();
 
                     for(int i = 0; i < allStores.size(); i++){
-                        System.out.println("[ " + (i + 1) + " ]" + allStores.get(i).getStreet() + " st., " + allStores.get(i).getCity());
+                        System.out.println("[ " + (i + 1) + " ]" + allStores.get(i).getCity());
                     }
                     System.out.println("Enter: ");
-                    int input = scan.nextInt() - 1;
+                    storeInput = scan.nextInt() - 1;
 
-                    if(input < 0 || input >= allStores.size()){
+                    if(storeInput < 0 || storeInput >= allStores.size()){
                         System.out.println("Invalid input. Try again.");
                     }else{
-                        inventory.setStoreId(allStores.get(input).getId());
+                        inventory.setStoreId(allStores.get(storeInput).getId());
                         scan.nextLine();
                         break;
                     }
@@ -220,7 +239,9 @@ public class AdminMenu implements IMenu {
 
 
                 System.out.println("\nPlease confirm updates (y/n)");
-                System.out.println("\n" + inventory);
+                System.out.println("Store: "+  allStores.get(storeInput).getCity());
+                System.out.println("Product: "+  allProducts.get(prodInput).getName());
+                System.out.println("Quantity: "+  inventory.getQuantity());
 
                 switch (scan.nextLine()) {
                     case "y":

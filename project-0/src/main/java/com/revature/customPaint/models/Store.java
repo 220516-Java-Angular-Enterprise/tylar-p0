@@ -5,18 +5,16 @@ public class Store {
     private String street;
     private String name;
     private String city;
-    private String state;
 
     public Store() {
         super();
     }
 
-    public Store(String id, String street, String name, String city, String state) {
+    public Store(String id, String street, String name, String city) {
         this.id = id;
         this.street = street;
         this.name = name;
         this.city = city;
-        this.state = state;
     }
 
     public String getId() {
@@ -51,16 +49,8 @@ public class Store {
         this.city = city;
     }
 
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
     @Override
     public String toString() {
-        return "Name: " + name + "\nCity: " + city + "\nState: " + state;
+        return "ID: " + id + "\nName: "  + name + "\nStreet: " + street + "\nCity: " + city;
     }
 }

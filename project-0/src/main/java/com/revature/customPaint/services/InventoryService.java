@@ -21,4 +21,13 @@ public class InventoryService {
     public List<Inventory> getAllInventory() {
         return inventoryDAO.getAll();
     }
+    public boolean inventoryExists(String storeId){
+        List<String> inventories = inventoryDAO.getAllStoreIds();
+
+        return inventories.contains(storeId);
+    }
+
+    public void update(String storeId, int quantity){
+        inventoryDAO.updateQuantity(storeId, quantity);
+    }
 }

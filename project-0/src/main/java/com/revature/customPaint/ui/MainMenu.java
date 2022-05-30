@@ -1,15 +1,14 @@
 package com.revature.customPaint.ui;
 
-import com.revature.customPaint.models.Store;
+import com.revature.customPaint.models.Product;
 //import com.revature.customPaint.models.Review;
 import com.revature.customPaint.models.User;
+import com.revature.customPaint.services.ProductService;
 import com.revature.customPaint.services.StoreService;
 //import com.revature.customPaint.services.ReviewService;
 import com.revature.customPaint.services.UserService;
 import com.revature.customPaint.util.annotations.Inject;
 
-import javax.swing.plaf.synth.SynthRootPaneUI;
-import java.sql.SQLOutput;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,13 +18,15 @@ public class MainMenu implements IMenu {
     private final UserService userService;
     //private final ReviewService reviewService;
     private final StoreService storeService;
+    private final ProductService productService;
 
     @Inject
-    public MainMenu(User user, UserService userService,StoreService storeService) {
+    public MainMenu(User user, UserService userService, StoreService storeService, ProductService productService) {
         this.user = user;
         this.userService = userService;
         //this.reviewService = reviewService;
         this.storeService = storeService;
+        this.productService = productService;
     }
 
     @Override
@@ -64,7 +65,28 @@ public class MainMenu implements IMenu {
 
     private void viewClothes() {
         Scanner scan = new Scanner(System.in);
-        List<Store> stores = storeService.getAllStores();
+        List<Product> products = productService.getAllProducts();
+
+        System.out.println("\n+---------------------+");
+        System.out.println("| Select to add to cart |");
+        System.out.println("+-----------------------+");
+
+        while (true){
+            for (int i = 0; i < products.size(); i++) {
+                System.out.println("[" + (i + 1) + "] " + products.get(i).getName() + " $" + products.get(i).getCost());
+            }
+
+            System.out.print("\nEnter: ");
+            int input = scan.nextInt() - 1;
+
+            if (input >= 0 && input < products.size()) {
+                break;
+            }else{
+                System.out.println("Invalid product selection.");
+            }
+        }
+
+
 
         /*while (true) {
             System.out.println("\n+-------------------------------------------+");

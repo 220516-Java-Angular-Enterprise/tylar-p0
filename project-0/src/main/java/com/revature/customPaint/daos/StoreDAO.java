@@ -16,12 +16,11 @@ public class StoreDAO implements CrudDAO<Store> {
     @Override
     public void save(Store obj) {
         try {
-            PreparedStatement ps = con.prepareStatement("INSERT INTO stores (id, street, name, city, state) VALUES (?, ?, ?, ?, ?)");
+            PreparedStatement ps = con.prepareStatement("INSERT INTO stores (id, street, name, city) VALUES (?, ?, ?, ?)");
             ps.setString(1, obj.getId());
             ps.setString(2, obj.getStreet());
             ps.setString(3, obj.getName());
             ps.setString(4, obj.getCity());
-            ps.setString(5, obj.getState());
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -59,7 +58,7 @@ public class StoreDAO implements CrudDAO<Store> {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                stores.add(new Store(rs.getString("id"), rs.getString("street"), rs.getString("name"), rs.getString("city"), rs.getString("state")));
+                stores.add(new Store(rs.getString("id"), rs.getString("street"), rs.getString("name"), rs.getString("city")));
             }
 
         } catch (SQLException e) {
@@ -68,7 +67,25 @@ public class StoreDAO implements CrudDAO<Store> {
 
         return stores;
     }
+    public List<String> getAllCities() {
+        List<String> cities = new ArrayList<>();
 
+        try {
+            PreparedStatement ps = con.prepareStatement("SELECT city FROM stores");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                // String username = rs.getString("username");
+                // usernames.add(username);
+
+                cities.add(rs.getString("city"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("An error occurred when tyring to get data from to the database.");
+        }
+
+        return cities;
+    }
     public void updateStoreInventory(){
 
     }

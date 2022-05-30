@@ -100,7 +100,7 @@ public class StartMenu implements IMenu {
                 if (user.getRole().equals("ADMIN"))
                     new AdminMenu(user, new StoreService(new StoreDAO()), new ProductService(new ProductDAO()), new InventoryService(new InventoryDAO())).start();
                 else
-                    new MainMenu(user, new UserService(new UserDAO()), new StoreService(new StoreDAO())).start();
+                    new MainMenu(user, new UserService(new UserDAO()), new StoreService(new StoreDAO()), new ProductService(new ProductDAO())).start();
                 break;
             } catch (InvalidUserException e) {
                 System.out.println(e.getMessage());
@@ -183,7 +183,7 @@ public class StartMenu implements IMenu {
 
                                 /* Calling the anonymous class MainMenu.start() to navigate to the main menu screen. */
                                 /* We are also passing in a user object, so we know who is logged in. */
-                                new MainMenu(user, new UserService(new UserDAO()), new StoreService(new StoreDAO())).start();
+                                new MainMenu(user, new UserService(new UserDAO()), new StoreService(new StoreDAO()), new ProductService(new ProductDAO())).start();
 
                                 /* Break out of the entire loop. */
                                 break completeExit;

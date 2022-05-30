@@ -2,6 +2,8 @@ package com.revature.customPaint.services;
 
 import com.revature.customPaint.daos.StoreDAO;
 import com.revature.customPaint.models.Store;
+import com.revature.customPaint.util.custom_exceptions.InvalidStoreException;
+import com.revature.customPaint.util.custom_exceptions.InvalidUserException;
 
 import java.util.List;
 
@@ -19,5 +21,11 @@ public class StoreService {
 
     public List<Store> getAllStores() {
         return storeDAO.getAll();
+    }
+
+    public boolean isNotDuplicateCity(String city) {
+        List<String> cities = storeDAO.getAllCities();
+        if (cities.contains(city)) throw new InvalidStoreException("There's already a store in that city :(");
+        return true;
     }
 }
