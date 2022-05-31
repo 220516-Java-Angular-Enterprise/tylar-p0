@@ -1,14 +1,10 @@
 package com.revature.customPaint.ui;
 
-import com.revature.customPaint.daos.InventoryDAO;
-import com.revature.customPaint.daos.ProductDAO;
-import com.revature.customPaint.daos.StoreDAO;
-import com.revature.customPaint.daos.UserDAO;
+import com.revature.customPaint.daos.*;
+import com.revature.customPaint.models.Cart;
+import com.revature.customPaint.models.History;
 import com.revature.customPaint.models.User;
-import com.revature.customPaint.services.InventoryService;
-import com.revature.customPaint.services.ProductService;
-import com.revature.customPaint.services.StoreService;
-import com.revature.customPaint.services.UserService;
+import com.revature.customPaint.services.*;
 import com.revature.customPaint.util.annotations.Inject;
 import com.revature.customPaint.util.custom_exceptions.InvalidUserException;
 
@@ -81,7 +77,9 @@ public class StartMenu implements IMenu {
     private void login() {
         String username;
         String password;
-        User user = new User();
+        User user;
+        Cart cart = null;
+        History history = null;
         Scanner scan = new Scanner(System.in);
 
         while (true) {
@@ -100,7 +98,7 @@ public class StartMenu implements IMenu {
                 if (user.getRole().equals("ADMIN"))
                     new AdminMenu(user, new StoreService(new StoreDAO()), new ProductService(new ProductDAO()), new InventoryService(new InventoryDAO())).start();
                 else
-                    new MainMenu(user, new UserService(new UserDAO()), new StoreService(new StoreDAO()), new ProductService(new ProductDAO())).start();
+                    new MainMenu(user, cart, history, new UserService(new UserDAO()), new StoreService(new StoreDAO()), new ProductService(new ProductDAO()), new CartService(new CartDAO()), new InventoryService(new InventoryDAO()), new HistoryService(new HistoryDAO())).start();
                 break;
             } catch (InvalidUserException e) {
                 System.out.println(e.getMessage());
@@ -112,6 +110,8 @@ public class StartMenu implements IMenu {
         String username;
         String password;
         User user;
+        Cart cart = null;
+        History history = null;
         Scanner scan = new Scanner(System.in);
 
         completeExit:
@@ -183,7 +183,7 @@ public class StartMenu implements IMenu {
 
                                 /* Calling the anonymous class MainMenu.start() to navigate to the main menu screen. */
                                 /* We are also passing in a user object, so we know who is logged in. */
-                                new MainMenu(user, new UserService(new UserDAO()), new StoreService(new StoreDAO()), new ProductService(new ProductDAO())).start();
+                                new MainMenu(user, cart, history, new UserService(new UserDAO()), new StoreService(new StoreDAO()), new ProductService(new ProductDAO()), new CartService(new CartDAO()), new InventoryService(new InventoryDAO()), new HistoryService(new HistoryDAO())).start();
 
                                 /* Break out of the entire loop. */
                                 break completeExit;

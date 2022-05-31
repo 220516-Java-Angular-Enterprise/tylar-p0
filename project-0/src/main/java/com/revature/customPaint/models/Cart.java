@@ -1,32 +1,30 @@
 package com.revature.customPaint.models;
 
 public class Cart {
-    String orderId;
+    String id;
     String productId;
-    String customizeID;
-    String userId;
-    String orderDate;
-    double totalCost;
+    String productName;
+    double productPrice;
+    int productQuantity;
 
     public Cart() {
         super();
     }
 
-    public Cart(String orderId, String productId, String customizeID, String userId, String orderDate, double totalCost) {
-        this.orderId = orderId;
+    public Cart(String id, String productId, String productName, double productPrice, int productQuantity) {
+        this.id = id;
         this.productId = productId;
-        this.customizeID = customizeID;
-        this.userId = userId;
-        this.orderDate = orderDate;
-        this.totalCost = totalCost;
+        this.productName = productName;
+        this.productPrice = productPrice;
+        this.productQuantity = productQuantity;
     }
 
-    public String getOrderId() {
-        return orderId;
+    public String getId() {
+        return id;
     }
 
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getProductId() {
@@ -37,35 +35,35 @@ public class Cart {
         this.productId = productId;
     }
 
-    public String getCustomizeID() {
-        return customizeID;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setCustomizeID(String customizeID) {
-        this.customizeID = customizeID;
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
-    public String getUserId() {
-        return userId;
+    public double getProductPrice() {
+        return productPrice;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setProductPrice(double productPrice) {
+        this.productPrice = productPrice;
     }
 
-    public String getOrderDate() {
-        return orderDate;
+    public int getProductQuantity() {
+        return productQuantity;
     }
 
-    public void setOrderDate(String orderDate) {
-        this.orderDate = orderDate;
+    public void setProductQuantity(int productQuantity) {
+        this.productQuantity = productQuantity;
+    }
+    @Override
+    public String toString() {
+        return "ID: " + id + "\nProduct Id: "  + productId + "\nProduct Name: " + productName + "\nProduct Price: " + productPrice + "\nProduct Quantity: " + productQuantity;
     }
 
-    public double getTotalCost() {
-        return totalCost;
-    }
-
-    public void setTotalCost(double totalCost) {
-        this.totalCost = totalCost;
+    public String partialToString(){
+        return "Product Name: " + productName + "\nProduct Price: " + productPrice + "\nProduct Quantity: " + productQuantity;
     }
 }
