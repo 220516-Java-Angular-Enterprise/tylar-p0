@@ -9,6 +9,7 @@ import com.revature.customPaint.util.annotations.Inject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MainMenu implements IMenu {
     @Inject
@@ -40,7 +41,9 @@ public class MainMenu implements IMenu {
     public void start() {
         Scanner scan = new Scanner(System.in);
         List<Store> stores = storeService.getAllStores();
-        String storeId;
+        String storeId = null;
+        int storeInput = 0;
+
         exit:
         {
             while (true) {
@@ -52,29 +55,44 @@ public class MainMenu implements IMenu {
                 System.out.println("| Which store would you like to shop at?  |");
                 System.out.println("+-----------------------------------------+");
 
+                    do {
+                        for (int i = 0; i < stores.size(); i++) {
+                            System.out.println("[" + (i + 1) + "] " + stores.get(i).getCity());
+                        }
+
+                        System.out.println("Enter: ");
+
+                        while (!scan.hasNextInt()) {
+                            String input = scan.next();
+                            System.out.printf("\"%s\" is not a valid number.%n", input);
+                            System.out.println("Enter: ");
+                        }
+                        storeInput = scan.nextInt() - 1;
+                        scan.nextLine();
+                    } while (storeInput < 0);
+
                 while(true){
-                    for (int i = 0; i < stores.size(); i++) {
-                        System.out.println("[" + (i + 1) + "] " + stores.get(i).getCity());
-                    }
-
-                    System.out.println("Enter: ");
-                    int storeInput = scan.nextInt() - 1;
-                    scan.nextLine();
-
                     if(storeInput < 0 || storeInput >= stores.size()){
                         System.out.println("Invalid store selection.");
                     }else{
                         storeId = stores.get(storeInput).getId();
                         break;
                     }
+
+                    for (int i = 0; i < stores.size(); i++) {
+                        System.out.println("[" + (i + 1) + "] " + stores.get(i).getCity());
+                    }
+
+                    System.out.println("Enter: ");
+                    storeInput = scan.nextInt() - 1;
+                    scan.nextLine();
+
+
                 }
 
-
-
-
-                System.out.println(drawSquare("| [1] Clothes     |     [2]Cart     |     [3]Profile     |     [x] Sign out |"));
-                System.out.println("| [1] Clothes     |     [2]Cart    |      [3]Profile     |     [x] Sign out |");
-                System.out.println(drawSquare("| [1] Clothes     |     [2]Cart     |     [3]Profile     |     [x] Sign out |"));
+                System.out.println(drawSquare("| [1] Clothes     |     [2]Order History     |     [3]Profile     |     [x] Sign out |"));
+                System.out.println("| [1] Clothes     |     [2]Order History    |      [3]Profile     |     [x] Sign out |");
+                System.out.println(drawSquare("| [1] Clothes     |     [2]Order History     |     [3]Profile     |     [x] Sign out |"));
 
                 System.out.print("\nEnter: ");
 
@@ -83,6 +101,7 @@ public class MainMenu implements IMenu {
                         viewClothes(storeId);
                         break;
                     case "2":
+                        viewOrderHistory(user.getId());
                         break;
                     case "3":
                         break;
@@ -103,13 +122,16 @@ public class MainMenu implements IMenu {
         List<Inventory> inventoryList = inventoryService.getAllInventory();
 
         String itemId;
-        String prodId;
-        String prodName;
-        double prodPrice;
+        String prodId = null;
+        String prodName = null;
+        double prodPrice = 0;
         int prodQuantity;
         int count = 0;
         int count2 = 0;
         int inventoryQuantity = 0;
+        int input = 0;
+        boolean tf = true;
+        int currentInventory;
 
         System.out.println("\n+---------------------+");
         System.out.println("| Select to add to cart |");
@@ -119,16 +141,17 @@ public class MainMenu implements IMenu {
         exit:
         {
             while (true){
+                prodId = products.get(input).getId();
+                prodName = products.get(input).getName();
+                prodPrice = products.get(input).getCost();
+
                 for (int i = 0; i < products.size(); i++) {
                     System.out.println("[" + (i + 1) + "] " + products.get(i).getName() + " $" + products.get(i).getCost());
                 }
 
                 System.out.print("\nEnter: ");
-                int input = scan.nextInt() - 1;
+                input = scan.nextInt() - 1;
 
-                prodId = products.get(input).getId();
-                prodName = products.get(input).getName();
-                prodPrice = products.get(input).getCost();
 
                 //loop through inventories
                 //if the inventory store id matches store id chosen
@@ -153,6 +176,7 @@ public class MainMenu implements IMenu {
                         if(prodQuantity > inventoryQuantity){
                             System.out.println("Sorry there are only " + inventoryQuantity);
                         }else{
+                            currentInventory = inventoryQuantity - prodQuantity;
                             break;
                         }
                     }
@@ -181,9 +205,13 @@ public class MainMenu implements IMenu {
                                 Date date = Calendar.getInstance().getTime();
                                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                                 String strDate = dateFormat.format(date);
-                                
+
                                 history = new History(UUID.randomUUID().toString(), user.getId(), strDate, sum);
                                 historyService.register(history);
+
+                                //subtract quantity with inventory quantity matching product number
+                                System.out.println(currentInventory);
+                                inventoryService.update(storeId, prodId, currentInventory);
                                 break exit;
                             case "n":
                                 break;
@@ -191,112 +219,49 @@ public class MainMenu implements IMenu {
                                 System.out.println("\nInvalid input.");
                                 break;
                         }
-                        break;
                     }
                 }else{
                     System.out.println("Invalid product selection.");
                     break;
                 }
-
-            /*if(input == 0){
-                count++;
-                if(count > 1){
-                    System.out.println("You've already added " + prodName + " to your cart.");
-                    count--;
-                    break;
-                }
-            }else if(input == 1){
-                count2++;
-                if(count2 > 1){
-                    System.out.println("You've already added " + prodName + " to your cart.");
-                }
-            }*/
-
-
             }
         }
 
+    }
 
-        //add items to cart
+    private void viewOrderHistory(String userId){
+        //filter through list of order histories to find orders where history user id equals user id
+        //adds to list
+        List<History> allHistory = historyService.getAllHistories();
+        Scanner scan = new Scanner(System.in);
 
+        System.out.println("\n+-------------+");
+        System.out.println("| Order History |");
+        System.out.println("+---------------+");
 
-        //add to order history
+        List<History> userHistory = allHistory.stream().filter(h -> h.getUserId().equals(userId)).collect(Collectors.toList());
+        userHistory.forEach((h -> System.out.println(h.toString() + " " + "\n")));
 
+        System.out.println("\n         +------------------------+");
+        System.out.println("Sort by  | earliest to oldest (1) |");
+        System.out.println("         +------------------------+");
+        System.out.println("\n         +------------------------+");
+        System.out.println("         | oldest to earliest (2) |");
+        System.out.println("         +------------------------+");
 
-        /*while (true) {
-            System.out.println("\n+-------------------------------------------+");
-            System.out.println("| Please select a restaurant to see reviews |");
-            System.out.println("+-------------------------------------------+");
-
-            for (int i = 0; i < stores.size(); i++) {
-                System.out.println("[" + (i + 1) + "] " + stores.get(i).getName());
-            }
-
-            System.out.print("\nEnter: ");
-            int input = scan.nextInt() - 1;
-
-            if (input >= 0 && input < stores.size()) {
-                Store selectedStore = stores.get(input);
-                List<Review> reviews = reviewService.getReviewByResto(selectedResto.getId());
-
-                System.out.println("\n" + drawHorizontalLine("| Reviews for  |", selectedStore.getName()));
-                System.out.println("| Reviews for " + selectedStore.getName() + " |");
-                System.out.println(drawHorizontalLine("| Reviews for  |", selectedStore.getName()));
-
-                if (!reviews.isEmpty()) {
-                    exit:
-                    {
-                        while (true) {
-                            int newLine = 0;
-                            for (Review r : reviews) {
-                                User userReview = userService.getUserById(r.getUser_id());
-                                System.out.println(r.getMsg() + "\nRating: " + r.getRating() + "\nUser: " + userReview.getUsername());
-
-                                if (newLine < reviews.size() - 1) System.out.println();
-
-                                newLine++;
-                            }
-
-                            scan.nextLine();
-
-                            System.out.println("\nDo you want to leave a review? (y/n)");
-                            System.out.print("\nEnter: ");
-
-                            switch (scan.nextLine()) {
-                                case "y":
-                                    break;
-                                case "n":
-                                    break exit;
-                                default:
-                                    System.out.println("\nInvalid input!");
-                                    break;
-                            }
-                        }
-                    }
-                } else {
-                    exit:
-                    {
-                        scan.nextLine();
-
-                        System.out.println("No reviews yet!");
-                        System.out.println("\nDo you want to leave a review? (y/n)");
-                        System.out.print("\nEnter: ");
-
-                        switch (scan.nextLine()) {
-                            case "y":
-                                break;
-                            case "n":
-                                break exit;
-                            default:
-                                System.out.println("\nInvalid input!");
-                                break;
-                        }
-                    }
-                }
-            } else {
-                System.out.println("\nInvalid restaurant selection.");
-            }
-        }*/
+        switch (scan.nextLine()){
+            case "1":
+                List<History> sortByDate = allHistory.stream().sorted(Comparator.comparing(History::getOrderDate)).collect(Collectors.toList());
+                sortByDate.forEach(d -> System.out.println(d + " " + "\n"));
+                break;
+            case "2":
+                List<History> sortByDateReverse = allHistory.stream().sorted(Comparator.comparing(History::getOrderDate).reversed()).collect(Collectors.toList());
+                sortByDateReverse.forEach(d -> System.out.println(d + " " + "\n"));
+                break;
+            default:
+                System.out.println("Invalid input");
+                break;
+        }
     }
 
 

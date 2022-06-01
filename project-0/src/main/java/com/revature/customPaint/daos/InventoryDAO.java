@@ -82,11 +82,12 @@ public class InventoryDAO implements CrudDAO<Inventory>{
         return ids;
     }
 
-    public void updateQuantity(String storeId, int quantity){
+    public void updateQuantity(String storeId, String productId, int quantity){
         try{
-            PreparedStatement ps = con.prepareStatement("UPDATE inventory SET quantity = ? WHERE store_id = ?");
+            PreparedStatement ps = con.prepareStatement("UPDATE inventory SET quantity = ? WHERE product_id = ? AND store_id = ?");
             ps.setInt(1, quantity);
-            ps.setString(2, storeId);
+            ps.setString(2, productId);
+            ps.setString(3, storeId);
             ps.executeUpdate();
         }catch (SQLException e){
             throw new RuntimeException("An error occurred when tyring to update your database.");

@@ -27,7 +27,7 @@ public class InventoryService {
         return inventories.contains(storeId);
     }
 
-    public void update(String storeId, int quantity){
-        inventoryDAO.updateQuantity(storeId, quantity);
+    public void update(String storeId, String productId, int quantity){
+        inventoryDAO.updateQuantity(storeId, productId, quantity);
     }
 }

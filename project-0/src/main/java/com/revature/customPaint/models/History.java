@@ -44,4 +44,10 @@ public class History {
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
     }
+
+    @Override
+    public String toString() {
+        return "ID: " + id + "\nUser ID: " + userId + "\nOrder Date: " + orderDate + "\nTotal Price: " +
+                totalPrice;
+    }
 }
