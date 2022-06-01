@@ -1,6 +1,5 @@
 package com.revature.customPaint.ui;
 
-import com.revature.customPaint.daos.InventoryDAO;
 import com.revature.customPaint.models.Inventory;
 import com.revature.customPaint.models.Product;
 import com.revature.customPaint.models.Store;
@@ -11,7 +10,6 @@ import com.revature.customPaint.services.ProductService;
 import com.revature.customPaint.util.annotations.Inject;
 import com.revature.customPaint.util.custom_exceptions.InvalidStoreException;
 
-import java.sql.Array;
 import java.util.*;
 
 public class AdminMenu implements IMenu {
@@ -43,7 +41,6 @@ public class AdminMenu implements IMenu {
                 System.out.println("[2] Create product");
                 System.out.println("[3] Add product to store");
                 System.out.println("[4] Delete store");
-                System.out.println("[5] Search store");
                 System.out.println("[x] Sign out");
 
                 System.out.print("\nEnter: ");

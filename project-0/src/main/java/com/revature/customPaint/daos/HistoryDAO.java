@@ -1,7 +1,6 @@
 package com.revature.customPaint.daos;
 
 import com.revature.customPaint.models.History;
-import com.revature.customPaint.models.Inventory;
 import com.revature.customPaint.util.database.DatabaseConnection;
 
 import java.sql.Connection;

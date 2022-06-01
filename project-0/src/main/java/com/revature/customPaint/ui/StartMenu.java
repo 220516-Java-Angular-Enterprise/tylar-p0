@@ -66,9 +66,9 @@ public class StartMenu implements IMenu {
 
     private void displayWelcomeMsg() {
         /* Welcome message. */
-        System.out.println("\n+------------------+");
-        System.out.println("| Welcome to Custom Paint! |");
-        System.out.println("+------------------+");
+        System.out.println("\n+----------------------+");
+        System.out.println("| Welcome to TK Apparel! |");
+        System.out.println("+------------------------+");
         System.out.println("[1] Login");
         System.out.println("[2] Signup");
         System.out.println("[x] Exit");

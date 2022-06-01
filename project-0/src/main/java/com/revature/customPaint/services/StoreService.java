@@ -3,7 +3,6 @@ package com.revature.customPaint.services;
 import com.revature.customPaint.daos.StoreDAO;
 import com.revature.customPaint.models.Store;
 import com.revature.customPaint.util.custom_exceptions.InvalidStoreException;
-import com.revature.customPaint.util.custom_exceptions.InvalidUserException;
 
 import java.util.List;
 

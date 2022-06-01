@@ -1,10 +1,8 @@
 package com.revature.customPaint.daos;
 
-import com.revature.customPaint.daos.CrudDAO;
 import com.revature.customPaint.models.User;
 import com.revature.customPaint.util.database.DatabaseConnection;
 
-import java.io.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

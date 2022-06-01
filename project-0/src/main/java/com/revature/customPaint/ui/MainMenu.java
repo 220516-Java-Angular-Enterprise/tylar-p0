@@ -51,44 +51,7 @@ public class MainMenu implements IMenu {
                 System.out.println("| Welcome " + user.getUsername() + "!|");
                 System.out.println(drawHorizontalLine("| Welcome! |", user.getUsername()));
 
-                System.out.println("\n+---------------------------------------+");
-                System.out.println("| Which store would you like to shop at?  |");
-                System.out.println("+-----------------------------------------+");
 
-                    do {
-                        for (int i = 0; i < stores.size(); i++) {
-                            System.out.println("[" + (i + 1) + "] " + stores.get(i).getCity());
-                        }
-
-                        System.out.println("Enter: ");
-
-                        while (!scan.hasNextInt()) {
-                            String input = scan.next();
-                            System.out.printf("\"%s\" is not a valid number.%n", input);
-                            System.out.println("Enter: ");
-                        }
-                        storeInput = scan.nextInt() - 1;
-                        scan.nextLine();
-                    } while (storeInput < 0);
-
-                while(true){
-                    if(storeInput < 0 || storeInput >= stores.size()){
-                        System.out.println("Invalid store selection.");
-                    }else{
-                        storeId = stores.get(storeInput).getId();
-                        break;
-                    }
-
-                    for (int i = 0; i < stores.size(); i++) {
-                        System.out.println("[" + (i + 1) + "] " + stores.get(i).getCity());
-                    }
-
-                    System.out.println("Enter: ");
-                    storeInput = scan.nextInt() - 1;
-                    scan.nextLine();
-
-
-                }
 
                 System.out.println(drawSquare("| [1] Clothes     |     [2]Order History     |     [3]Profile     |     [x] Sign out |"));
                 System.out.println("| [1] Clothes     |     [2]Order History    |      [3]Profile     |     [x] Sign out |");
@@ -98,12 +61,51 @@ public class MainMenu implements IMenu {
 
                 switch (scan.nextLine()) {
                     case "1":
+                        System.out.println("\n+---------------------------------------+");
+                        System.out.println("| Which store would you like to shop at?  |");
+                        System.out.println("+-----------------------------------------+");
+
+                        do {
+                            for (int i = 0; i < stores.size(); i++) {
+                                System.out.println("[" + (i + 1) + "] " + stores.get(i).getCity());
+                            }
+
+                            System.out.println("Enter: ");
+
+                            while (!scan.hasNextInt()) {
+                                String input = scan.next();
+                                System.out.printf("\"%s\" is not a valid number.%n", input);
+                                System.out.println("Enter: ");
+                            }
+                            storeInput = scan.nextInt() - 1;
+                            scan.nextLine();
+                        } while (storeInput < 0);
+
+                        while(true){
+                            if(storeInput < 0 || storeInput >= stores.size()){
+                                System.out.println("Invalid store selection.");
+                            }else{
+                                storeId = stores.get(storeInput).getId();
+                                break;
+                            }
+
+                            for (int i = 0; i < stores.size(); i++) {
+                                System.out.println("[" + (i + 1) + "] " + stores.get(i).getCity());
+                            }
+
+                            System.out.println("Enter: ");
+                            storeInput = scan.nextInt() - 1;
+                            scan.nextLine();
+
+
+                        }
                         viewClothes(storeId);
                         break;
                     case "2":
                         viewOrderHistory(user.getId());
                         break;
                     case "3":
+                        viewProfile();
                         break;
                     case "x":
                         break exit;
@@ -122,15 +124,12 @@ public class MainMenu implements IMenu {
         List<Inventory> inventoryList = inventoryService.getAllInventory();
 
         String itemId;
-        String prodId = null;
-        String prodName = null;
-        double prodPrice = 0;
+        String prodId;
+        String prodName;
+        double prodPrice;
         int prodQuantity;
-        int count = 0;
-        int count2 = 0;
         int inventoryQuantity = 0;
         int input = 0;
-        boolean tf = true;
         int currentInventory;
 
         System.out.println("\n+---------------------+");
@@ -175,6 +174,7 @@ public class MainMenu implements IMenu {
 
                         if(prodQuantity > inventoryQuantity){
                             System.out.println("Sorry there are only " + inventoryQuantity);
+                            break exit;
                         }else{
                             currentInventory = inventoryQuantity - prodQuantity;
                             break;
@@ -239,31 +239,76 @@ public class MainMenu implements IMenu {
         System.out.println("| Order History |");
         System.out.println("+---------------+");
 
-        List<History> userHistory = allHistory.stream().filter(h -> h.getUserId().equals(userId)).collect(Collectors.toList());
+        List<History> userHistory = allHistory.stream().filter(h -> h.getUserId().equals(user.getId())).collect(Collectors.toList());
         userHistory.forEach((h -> System.out.println(h.toString() + " " + "\n")));
 
-        System.out.println("\n         +------------------------+");
-        System.out.println("Sort by  | earliest to oldest (1) |");
-        System.out.println("         +------------------------+");
-        System.out.println("\n         +------------------------+");
-        System.out.println("         | oldest to earliest (2) |");
-        System.out.println("         +------------------------+");
+        if(userHistory.size() > 0){
+            System.out.println("\n         +------------------------+");
+            System.out.println("Sort by  | earliest to oldest (1) |");
+            System.out.println("         +------------------------+");
+            System.out.println("\n         +------------------------+");
+            System.out.println("         | oldest to earliest (2) |");
+            System.out.println("         +------------------------+");
 
-        switch (scan.nextLine()){
-            case "1":
-                List<History> sortByDate = allHistory.stream().sorted(Comparator.comparing(History::getOrderDate)).collect(Collectors.toList());
-                sortByDate.forEach(d -> System.out.println(d + " " + "\n"));
-                break;
-            case "2":
-                List<History> sortByDateReverse = allHistory.stream().sorted(Comparator.comparing(History::getOrderDate).reversed()).collect(Collectors.toList());
-                sortByDateReverse.forEach(d -> System.out.println(d + " " + "\n"));
-                break;
-            default:
-                System.out.println("Invalid input");
-                break;
+            switch (scan.nextLine()){
+                case "1":
+                    List<History> sortByDate = userHistory.stream().sorted(Comparator.comparing(History::getOrderDate)).collect(Collectors.toList());
+                    sortByDate.forEach(d -> System.out.println(d + " " + "\n"));
+                    break;
+                case "2":
+                    List<History> sortByDateReverse = allHistory.stream().sorted(Comparator.comparing(History::getOrderDate).reversed()).collect(Collectors.toList());
+                    sortByDateReverse.forEach(d -> System.out.println(d + " " + "\n"));
+                    break;
+                default:
+                    System.out.println("Invalid input");
+                    break;
+            }
+
+        }else{
+            System.out.println("You don't have any orders");
         }
+
+
     }
 
+    private void viewProfile(){
+        while(true){
+            Scanner scan = new Scanner(System.in);
+            System.out.println("\n+----------+");
+            System.out.println("| My Profile |");
+            System.out.println("+------------+");
+
+            System.out.println("Information: ");
+            System.out.println(user.getUsername());
+
+            int totalPoints = generatePoints();
+
+            System.out.println("\n-----My Points-----");
+            System.out.println("\n         " + totalPoints);
+
+            System.out.println("\n----------------------");
+            System.out.println("Press (x) to exit");
+
+            if(scan.nextLine().equals("x")){
+                break;
+            }else{
+                System.out.println("Invalid input");
+            }
+        }
+
+
+
+
+    }
+
+    private int generatePoints(){
+        List<History> allHistory = historyService.getAllHistories();
+
+        List<History> userHistory = allHistory.stream().filter(h -> h.getUserId().equals(user.getId())).collect(Collectors.toList());
+
+        return userHistory.size();
+
+    }
 
 
     private String drawHorizontalLine(String msg, String nameLength) {

@@ -3,7 +3,6 @@ package com.revature.customPaint.daos;
 import com.revature.customPaint.models.Cart;
 import com.revature.customPaint.util.database.DatabaseConnection;
 
-import javax.naming.ldap.PagedResultsControl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

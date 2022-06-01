@@ -5,7 +5,6 @@ import com.revature.customPaint.models.User;
 import com.revature.customPaint.util.annotations.Inject;
 import com.revature.customPaint.util.custom_exceptions.InvalidUserException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /* Purpose: validation ie. checks username, password, and retrieve data from our daos. */
